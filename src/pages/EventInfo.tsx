@@ -1,14 +1,18 @@
 import { useParams } from "react-router-dom";
 import placeholder from '../assets/placeholder.png'
 import EventCardTag from "../modals/EventCardTag";
+import Rating from "../components/Review";
+import { useState } from "react";
 
 
 const EventInfo = () => {
     const { eventID } = useParams(); //EVENT ID
+    console.log(eventID)
     const eventIMG = ""
+    const [quantity, setQuantity] = useState(0);
     return (
-        <div>
-            <div className="bg-gray-100">
+        <div className="bg-slate-950 text-white">
+            <div className="bg-slate-950">
                 <div className="container mx-auto px-4 py-8">
                     <div className="flex flex-wrap -mx-4">
                         {/* Product Images */}
@@ -29,40 +33,18 @@ const EventInfo = () => {
                                 <span className="text-gray-500 line-through">$399.99</span>
                             </div>
                             {/**ADD REVIEWS RATING STARS HERE */}
-                            <p className="text-gray-700 mb-6">
+                            <Rating rating={4}></Rating>
+                            <p className="text-white mb-6">
                                 Experience premium sound quality and industry-leading noise
                                 cancellation with these wireless headphones. Perfect for music lovers
                                 and frequent travelers.
                             </p>
-                            {/* <div className="mb-6">
-                                <h3 className="text-lg font-semibold mb-2">Color:</h3>
-                                <div className="flex space-x-2">
-                                    <button className="w-8 h-8 bg-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" />
-                                    <button className="w-8 h-8 bg-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300" />
-                                    <button className="w-8 h-8 bg-blue-500 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" />
-                                </div>
-                            </div> */}
+
 
                             <div className="flex space-x-4 mb-6">
 
-                                <button className="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                                        />
-                                    </svg>
-                                    Book tickets
-                                </button>
-                                <div className="mb-6">
+
+                                {/* <div className="mb-6">
                                     <label
                                         htmlFor="quantity"
                                         className="block text-sm font-medium text-gray-700 mb-1"
@@ -77,14 +59,92 @@ const EventInfo = () => {
                                         defaultValue={1}
                                         className="w-12 text-center rounded-md border-gray-300  shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                     />
+                                </div> */}
+                                <div className="flex">
+                                    <button className="bg-sky-700 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-md ">
+                                        Button
+                                    </button>
+                                    <form className="max-w-30 mx-auto">
+                                        <label
+                                            htmlFor="bedrooms-input"
+                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >
+
+                                        </label>
+                                        <div className=" relative flex items-center max-w-[11rem]">
+                                            <button
+                                                onClick={() => setQuantity(quantity - 1)}
+                                                type="button"
+                                                id="decrement-button"
+                                                data-input-counter-decrement="bedrooms-input"
+                                                className="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                                            >
+                                                <svg
+                                                    className="w-3 h-3 text-gray-900 dark:text-white"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 18 2"
+                                                >
+                                                    <path
+                                                        stroke="currentColor"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M1 1h16"
+                                                    />
+                                                </svg>
+                                            </button>
+                                            <input
+                                                type="text"
+                                                id="quantity-input"
+                                                data-input-counter=""
+                                                data-input-counter-min={1}
+                                                data-input-counter-max={5}
+                                                aria-describedby="helper-text-explanation"
+                                                className=" items-center m-auto appearance-none bg-gray-50 border-x-0 border-gray-300  font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder=""
+                                                value={quantity}
+
+                                            />
+
+
+                                            <button
+                                                onClick={() => setQuantity(quantity + 1)}
+                                                type="button"
+                                                id="increment-button"
+                                                data-input-counter-increment="bedrooms-input"
+                                                className=" bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                                            >
+                                                <svg
+                                                    className="w-3 h-3 text-gray-900 dark:text-white"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 18 18"
+                                                >
+                                                    <path
+                                                        stroke="currentColor"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M9 1v16M1 9h16"
+                                                    />
+                                                </svg>
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+                                    {/**input */}
                                 </div>
 
                             </div>
                             <div>
                                 <h3 className=" flex 0text-lg font-semibold mb-2">Tags:</h3>
-                                <ul className="list-disc list-inside text-gray-700">
+                                <div className="flex list-disc list-inside text-gray-700">
                                     {["horror", "comedy", "action"].map((tag, index) => <EventCardTag colour='default' tag={tag || ""} key={index} />)}
-                                </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
