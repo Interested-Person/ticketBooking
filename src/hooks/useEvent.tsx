@@ -81,10 +81,11 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const bookEvent = async (eventId: string, seatCount: number, userId: string): Promise<boolean> => {
     try {
       if (seatCount <= 0) return false
+
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
-      if (!eventSnap.exists()) throw new Error("Event not found");
+      if (!eventSnap.exists()) return "Event not found";
 
       const eventData = eventSnap.data();
       const currentCapacity = eventData.availableCapacity ?? 0;
@@ -109,9 +110,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (error) {
       console.error("Error booking event: ", error);
       return false
+
     }
   };
-
   const unbookEvent = async (id: string) => {
     if (!user) return "❌ You must be logged in to unbook.";
     try {

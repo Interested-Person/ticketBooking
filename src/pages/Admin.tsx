@@ -17,9 +17,10 @@ const Admin = () => {
 
                 {openAddEntry && <AddEntry onClose={() => setOpenAddEntry(false)} />}
             </div>
-            <div className="flex gap-5">
+            <div className="flex gap-5 p-4 basis-1/2 md:basis-1/3 xl:basis-1'4 flex-wrap">
                 {ticketsFeed.map((event) => (
                     <EventCard
+                        key={event.id}
                         event={event}
                         whatPage="admin"
                     />
