@@ -10,10 +10,13 @@ export default function Navbar() {
     }
     const { completeRegistration, isLoggedIn, user, needsInfo } = useAuth();
     return (<>
-        <nav>
+        <nav className="bg-sky-950 w-screen items-center px-4 text-white h-16 flex justify-between">
+            <div>
+                <span>BookEasy</span>
+            </div>
             {isLoggedIn ? (<div>
 
-                <img referrerPolicy="no-referrer"  loading="lazy" src={user?.pfpUrl} alt="" />
+                <img referrerPolicy="no-referrer" className="w-10 rounded-full" loading="lazy" src={user?.pfpUrl} alt="" />
 
             </div>) : (
 

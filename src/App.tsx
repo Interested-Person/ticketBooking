@@ -9,7 +9,7 @@ import Navbar from './components/navbar'
 function App() {
 // const {completeRegistration} = useAuth();
   return (
-    <>
+    <div className='bg-slate-950 min-h-screen w-screen'>
     <AuthProvider>
       <Router>
         <Navbar/>
@@ -24,7 +24,7 @@ function App() {
         </Routes>
       </Router>
       </AuthProvider>
-    </>
+    </div>
   )
 }
 
