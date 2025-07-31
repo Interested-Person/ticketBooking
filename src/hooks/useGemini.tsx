@@ -8,7 +8,7 @@ const ai = new GoogleGenAI({
 });
 
 export const useGemini = () => {
-  const { ticketsFeed, unbookEvent, getUserBookings,bookEvent } = useEvent();
+  const { ticketsFeed, unbookEvent, getUserBookings,bookEventAI } = useEvent();
   const { user } = useAuth();
 
   const getEventBookingStatus = async () => {
@@ -77,7 +77,7 @@ User: ${prompt}`,
           const seatCount = parseInt(seatStr);
           const id = idMap[index];
           if (!id) return "❌ Invalid event index.";
-          return await bookEvent(id, seatCount,user.uid);
+          return await bookEventAI(id, seatCount,user.uid);
         }
       } else if (text.startsWith("__UNBOOK__")) {
         const match = text.match(/event_index=(\d+)/);
@@ -99,8 +99,6 @@ User: ${prompt}`,
 
   return {
     generateContent,
-    bookEvent,
-    unbookEvent,
     getUserBookings,
     getEventBookingStatus,
   };

@@ -24,7 +24,8 @@ interface EventContextType {
   getUserBookings: (userId: string) => Promise<any[]>;
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
-  deleteEvent: (eventID: string) => Promise<void>
+  deleteEvent: (eventID: string) => Promise<void>;
+  bookEventAI: (eventId: string, seatCount: number, userId: string) => Promise<string>;
 }
 
 const EventContext = createContext<EventContextType | null>(null);
@@ -85,7 +86,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
-      if (!eventSnap.exists()) return "Event not found";
+      if (!eventSnap.exists()) return false;
 
       const eventData = eventSnap.data();
       const currentCapacity = eventData.availableCapacity ?? 0;
@@ -113,6 +114,42 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     }
   };
+
+
+  //
+   const bookEventAI = async (eventId: string, seatCount: number, userId: string) => {
+    // console.log
+    try {
+      if (seatCount <= 0) return "less than 1 seat  ";
+      const eventRef = doc(db, "events", eventId);
+      const eventSnap = await getDoc(eventRef);
+
+      if (!eventSnap.exists()) return "Event not found";
+
+      const eventData = eventSnap.data();
+      const currentCapacity = eventData.availableCapacity ?? 0;
+
+      if (currentCapacity < seatCount) {
+        throw new Error("Not enough seats available");
+      }
+
+      await updateDoc(eventRef, {
+        availableCapacity: currentCapacity - seatCount,
+      });
+
+      await addDoc(collection(db, "bookings"), {
+        eventId,
+        userId,
+        seatCount,
+        timestamp: Timestamp.now(),
+      });
+return `✅ Booked ${seatCount} seats for event ${eventId}.`;
+    } catch (error) {
+      console.error("Error booking event: ", error);
+      return "❌ Failed to book event.";
+    }
+  };
+
   const unbookEvent = async (id: string) => {
     if (!user) return "❌ You must be logged in to unbook.";
     try {
@@ -171,6 +208,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         getUserBookings,
         loading,
         deleteEvent,
+        bookEventAI,
       }}
     >
       {children}
