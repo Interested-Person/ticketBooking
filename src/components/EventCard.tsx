@@ -2,7 +2,7 @@
 import placeholder from '../assets/placeholder.png'
 import { useNavigate } from 'react-router-dom'
 
-const EventCard = ({ eventName, eventID, eventDescription, eventImg }: { eventName: string, eventID: string, eventDescription: string, eventImg: string }) => {
+const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: string, eventID: string, eventTags: string[], eventImg: string }) => {
     const navigate = useNavigate()
     return (
         <div className="max-w-40 md:max-w-64 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -16,7 +16,7 @@ const EventCard = ({ eventName, eventID, eventDescription, eventImg }: { eventNa
                     </h5>
                 </p>
                 <p className="mb-2 font-normal text-gray-700 dark:text-gray-400">
-                    {eventDescription}
+                    {eventTags.map((tag, index) => <span key={index}>{tag}</span>)}
                 </p>
                 <button
                     onClick={() => { navigate("/event/" + eventID) }}
