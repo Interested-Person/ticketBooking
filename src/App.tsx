@@ -7,6 +7,7 @@ import Admin from './pages/Admin'
 import { AuthProvider } from './Context/AuthContext'
 import Navbar from './components/navbar'
 import EventInfo from './pages/EventInfo'
+import Account from './pages/Account'
 function App() {
   // const {completeRegistration} = useAuth();
   return (
@@ -17,7 +18,7 @@ function App() {
           <Routes>
 
             <Route path="/admin" element={<Admin />}></Route>
-            <Route path="/signin" element={<SignIn />}></Route>
+            <Route path='/account' element={<Account />}></Route>
             <Route path="/eventinfo/:eventID" element={<EventInfo />}></Route>
             <Route path="/*" element={<Home />} ></Route>
 
