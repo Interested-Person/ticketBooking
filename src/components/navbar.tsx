@@ -11,8 +11,8 @@ export default function Navbar() {
     const { completeRegistration, isLoggedIn, user, needsInfo } = useAuth();
     return (<>
         <nav className="bg-sky-950 w-screen items-center px-4 text-white h-16 flex justify-between">
-            <div>
-                <span>BookEasy</span>
+            <div className="flex items-center gap-2">
+                <img src="/logo.svg" className="h-16" alt="" />
             </div>
             {isLoggedIn ? (<div>
 
