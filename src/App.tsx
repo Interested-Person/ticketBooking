@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path="/admin" element={<Admin />}></Route>
             <Route path='/account' element={<Account />}></Route>
-            <Route path="/eventinfo/:eventID" element={<EventInfo />}></Route>
+            <Route path="/event/:eventID" element={<EventInfo />}></Route>
             <Route path="/chat" element={<Chat />} ></Route>
 
             <Route path="/*" element={<Home />} ></Route>

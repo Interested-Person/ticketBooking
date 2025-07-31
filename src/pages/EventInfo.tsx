@@ -1,14 +1,17 @@
 import { useParams } from "react-router-dom";
 import placeholder from '../assets/placeholder.png'
-import EventCardTag from "../modals/EventCardTag";
 import Rating from "../components/Review";
 import { useState } from "react";
-
+import { useEvent } from "../hooks/useEvent";
 
 const EventInfo = () => {
+    const { ticketsFeed } = useEvent()
     const { eventID } = useParams(); //EVENT ID
-    console.log(eventID)
-    const eventIMG = ""
+    ticketsFeed.filter((event) => event.id === eventID)
+    const event = ticketsFeed[0]
+
+
+
     const [quantity, setQuantity] = useState(0);
     return (
         <div className="bg-slate-950 text-white">
@@ -18,7 +21,7 @@ const EventInfo = () => {
                         {/* Product Images */}
                         <div className="w-full md:w-1/2 px-4 mb-8">
                             <img
-                                src={eventIMG || placeholder}
+                                src={event.imageURL || placeholder}
                                 alt="Product"
                                 className="w-full h-auto rounded-lg shadow-md mb-4"
                                 id="mainImage"
@@ -27,17 +30,14 @@ const EventInfo = () => {
                         </div>
                         {/* Product Details */}
                         <div className="w-full md:w-1/2 px-4">
-                            <h2 className="text-3xl font-bold mb-2">Premium Wireless Headphones</h2>
+                            <h2 className="text-3xl font-bold mb-2">{event.name}</h2>
                             <div className="mb-4">
-                                <span className="text-2xl font-bold mr-2">$349.99</span>
-                                <span className="text-gray-500 line-through">$399.99</span>
+                                <span className="text-2xl font-bold mr-2">₹{event.price}</span>
                             </div>
                             {/**ADD REVIEWS RATING STARS HERE */}
                             <Rating rating={4}></Rating>
                             <p className="text-white mb-6">
-                                Experience premium sound quality and industry-leading noise
-                                cancellation with these wireless headphones. Perfect for music lovers
-                                and frequent travelers.
+                                {event.description}
                             </p>
 
 
@@ -60,18 +60,18 @@ const EventInfo = () => {
                                         className="w-12 text-center rounded-md border-gray-300  shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                     />
                                 </div> */}
-                                <div className="flex">
-                                    <button className="bg-sky-700 mr-5  hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-md ">
-                                        Button
+                                <div className="flex items-center">
+                                    <button className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
+                                        Book tickets
                                     </button>
-                                    <form className="max-w-30 mx-auto">
+                                    <form className="max-w-30 ">
                                         <label
                                             htmlFor="bedrooms-input"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            className="block  text-sm font-medium text-gray-900 dark:text-white"
                                         >
 
                                         </label>
-                                        <div className=" relative flex items-center max-w-[11rem]">
+                                        <div className=" relative flex items-center ">
                                             <button
                                                 onClick={() => setQuantity(quantity - 1)}
                                                 type="button"
@@ -140,12 +140,7 @@ const EventInfo = () => {
                                 </div>
 
                             </div>
-                            <div>
-                                <h3 className=" flex 0text-lg font-semibold mb-2">Tags:</h3>
-                                <div className="flex list-disc list-inside text-gray-700">
-                                    {["horror", "comedy", "action"].map((tag, index) => <EventCardTag colour='default' tag={tag || ""} key={index} />)}
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
