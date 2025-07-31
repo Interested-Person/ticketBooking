@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEvent } from "../../hooks/useEvent";
 import type { Event } from "../../types";
 import { useGemini } from "../../hooks/useGemini";
+import { useModal } from "../../hooks/useModal";
 
 
 
@@ -20,6 +21,7 @@ export default function AddEntry({ onClose }: { onClose: () => void }) {
   const { addEvent } = useEvent();
   const [formData, setFormData] = useState<Partial<Omit<Event, "id">>>(defaultFormData);
   const [loadingAI, setLoadingAI] = useState(false);
+  const { open} =useModal();
 const {improveContent} = useGemini();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -56,13 +58,14 @@ const {improveContent} = useGemini();
         value === null ||
         (typeof value === "string" && value.trim() === "")
       ) {
-        alert(`Please fill in the ${field} field.`);
+        open(`Please fill in the ${field} field.`);
         return;
       }
     }
 
     await addEvent(formData as Omit<Event, "id">);
     onClose();
+    open("Event added successfully!");
     setFormData(defaultFormData);
   };
 
@@ -75,7 +78,7 @@ const {improveContent} = useGemini();
 
   const improveDescription = async () => {
     if (!formData.description) {
-      alert("Please enter a description first.");
+      open("Please enter a description to improve.");
       return;
     }
 
@@ -91,7 +94,7 @@ const {improveContent} = useGemini();
       }
     } catch (err) {
       console.error("AI improvement failed", err);
-      alert("❌ Failed to improve description.");
+      open("Failed to improve description. Please try again.");
     } finally {
       setLoadingAI(false);
     }

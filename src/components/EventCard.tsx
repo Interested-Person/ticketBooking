@@ -16,7 +16,7 @@ const EventCard = ({ event, whatPage }: { event: Event, whatPage?: string }) => 
     const navigate = useNavigate()
 
     return (
-        <div className="max-w-40 md:max-w-64 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <div className="max-w-38 md:max-w-64 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div className="cursor-pointer" onClick={() => navigate("/event/" + eventID || "")}>
                 <img className="rounded-t-lg h-40 w-full  object-cover " src={eventImg || placeholder} alt="" />
             </div>

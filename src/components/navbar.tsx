@@ -67,7 +67,7 @@ export default function Navbar() {
                         placeholder="Search events..."
                         value={query}
                         onChange={handleSearch}
-                        className="px-3 py-1 w-full max-w-md rounded bg-white text-black placeholder-gray-500"
+                        className="px-3 py-3 outline-0 w-full max-w-md rounded bg-white text-black placeholder-gray-500"
                     />
                 </div>
 

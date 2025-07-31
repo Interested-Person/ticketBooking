@@ -1,58 +1,36 @@
 import React from "react";
 
-type PromptProps = {
-  onSelect: ({ age, gender }: {age:number,gender:string}) => void;
+type PromptAdminProps = {
+  onSelect: (isAdmin: boolean) => void;
 };
 
-const promptMore: React.FC<PromptProps> = ({ onSelect }) => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const age = Number(formData.get("age"));
-    const gender = formData.get("gender") as string;
+const PromptAdmin: React.FC<PromptAdminProps> = ({ onSelect }) => {
 
-    if (!gender) {
-      alert("Please select a gender.");
-      return;
-    }
-
-    onSelect({ age, gender });
+  const handleChoice = (isAdmin: boolean) => {
+    onSelect(isAdmin);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md text-center">
-        <h2 className="text-2xl font-semibold mb-4">Please complete the registration</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            required
-            name="age"
-            placeholder="Enter age"
-            type="number"
-            min={1}
-            max={999}
-            className="border rounded px-3 py-2 w-full"
-          />
-          <div className="mt-4 flex items-center justify-center gap-4">
-            <label className="flex items-center gap-1">
-              <input type="radio" name="gender" value="male" required />
-              Male
-            </label>
-            <label className="flex items-center gap-1">
-              <input type="radio" name="gender" value="female" />
-              Female
-            </label>
-          </div>
+    <div className="fixed inset-0 z-50 bg-sky-900/60  flex items-center justify-center">
+      <div className="bg-sky-300 rounded-xl shadow-lg p-6 w-[90%] max-w-md text-center">
+        <h2 className="text-2xl font-semibold mb-4">Are you an Admin?</h2>
+        <div className="flex justify-center gap-6 mt-6">
           <button
-            type="submit"
-            className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={() => handleChoice(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
-            Submit
+            Yes
           </button>
-        </form>
+          <button
+            onClick={() => handleChoice(false)}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            No
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default promptMore;
+export default PromptAdmin;

@@ -2,10 +2,14 @@ import { useState } from "react";
 import EventCard from "../components/EventCard"
 import AddEntry from "../components/Modal/addEntryAdmin"
 import { useEvent } from "../hooks/useEvent"
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useAuth } from "../hooks/useAuth";
 const Admin = () => {
     const [openAddEntry, setOpenAddEntry] = useState(false);
     const { ticketsFeed } = useEvent()
-    if (!ticketsFeed) return (<div className="text-white">Loading</div>)
+    const { user } = useAuth();
+    if (!ticketsFeed) return (<LoadingSpinner />    )
+        if(!user ||!user.isAdmin) return <div className="text-white text-center mt-10">You are not authorized to view this page.</div>
     return (
         <div className="">
 
@@ -17,15 +21,17 @@ const Admin = () => {
 
                 {openAddEntry && <AddEntry onClose={() => setOpenAddEntry(false)} />}
             </div>
-            <div className="flex gap-5 p-4 basis-1/2 md:basis-1/3 xl:basis-1'4 flex-wrap">
+            <div className="flex flex-wrap gap-x-5 gap-y-5 pl-[2.5%]">
                 {ticketsFeed.map((event) => (
-                    <EventCard
+                    <div
                         key={event.id}
-                        event={event}
-                        whatPage="admin"
-                    />
+                        className="w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] xl:w-[calc(25%-15px)]"
+                    >
+                        <EventCard event={event} whatPage="admin" />
+                    </div>
                 ))}
             </div>
+
         </div>
     )
 }

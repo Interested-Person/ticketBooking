@@ -39,16 +39,14 @@ export const useAuth = () => {
     }, []);
 
     // You must call this manually after asking the user
-    const completeRegistration = async ({ age, gender }: { age: number, gender: string }) => {
+    const completeRegistration = async (isAdmin: boolean) => {
         if (!firebaseUser) return;
 
         const newUser: User = {
             uid: firebaseUser.uid,
             username: firebaseUser.displayName || "",
             pfpUrl: firebaseUser.photoURL || "",
-            age,
-            gender,
-            tags: [],
+            isAdmin
         };
 
         const userRef = doc(db, "users", firebaseUser.uid);

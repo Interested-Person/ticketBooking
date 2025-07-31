@@ -5,6 +5,7 @@ import { useEvent } from "../hooks/useEvent";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../hooks/useAuth";
 import { useUser } from "../hooks/useUser";
+import { useModal } from "../hooks/useModal";
 
 
 const EventInfo = () => {
@@ -12,6 +13,7 @@ const EventInfo = () => {
     const { ticketsFeed, bookEvent } = useEvent();
     //We grab the eventID from the URL parameters
     const { eventID } = useParams();
+    const {open} = useModal();
     const event = ticketsFeed.find((e) => e.id === eventID);
     const { user } = useAuth()
     const [quantity, setQuantity] = useState(0);
@@ -26,8 +28,8 @@ const EventInfo = () => {
 
     const handleBuy = async () => {
         if (!user) return;
-        if (currentTotal > wallet) return alert("Insufficient funds");
-        else if (event.availableCapacity < quantity) return alert("Not enough seats available");
+        if (currentTotal > wallet) return open("Insufficient funds to book tickets");
+        else if (event.availableCapacity < quantity) return open("Not enough seats available");
         else {
 
             if (await bookEvent(event.id, quantity, user.uid))
