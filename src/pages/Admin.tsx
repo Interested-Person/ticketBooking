@@ -21,6 +21,7 @@ const Admin = () => {
                 {ticketsFeed.map((event) => (
                     <EventCard
                         event={event}
+                        whatPage="admin"
                     />
                 ))}
             </div>

@@ -22,16 +22,17 @@ interface EventContextType {
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
   getUserBookings: (userId: string) => Promise<any[]>;
-  loading:boolean;
-  unbookEvent: (id: string) => Promise<string>; 
+  loading: boolean;
+  unbookEvent: (id: string) => Promise<string>;
+  deleteEvent: (eventID: string) => Promise<void>
 }
 
 const EventContext = createContext<EventContextType | null>(null);
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
-  const [loading,setLoading] = useState(false);
-  const {user} = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   useEffect(() => {
     setLoading(true);
     const eventsRef = collection(db, "events");
@@ -51,9 +52,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               : new Date(data.time),
           description: data.description,
           price: data.price,
-          totalCapacity: data.totalCapacity ,
-          availableCapacity: data.availableCapacity ,
-          museumName: data.museumName ,
+          totalCapacity: data.totalCapacity,
+          availableCapacity: data.availableCapacity,
+          museumName: data.museumName,
         };
       });
 
@@ -79,7 +80,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   //booking an event
   const bookEvent = async (eventId: string, seatCount: number, userId: string) => {
     try {
-      if(seatCount <= 0) return;
+      if (seatCount <= 0) return;
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
@@ -109,8 +110,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-const unbookEvent = async (id: string) => {
-if(!user) return "❌ You must be logged in to unbook.";
+  const unbookEvent = async (id: string) => {
+    if (!user) return "❌ You must be logged in to unbook.";
     try {
       const q = query(
         collection(db, "bookings"),
@@ -128,7 +129,7 @@ if(!user) return "❌ You must be logged in to unbook.";
     }
   };
 
-  
+
 
   const getUserBookings = async (userId: string) => {
     try {
@@ -148,6 +149,15 @@ if(!user) return "❌ You must be logged in to unbook.";
     }
   };
 
+  const deleteEvent = async (eventID: string) => {
+    console.log("hi")
+    try {
+      await deleteDoc(doc(db, "events", eventID));
+    } catch (error) {
+      console.error("Error deleting event: ", error);
+    }
+  };
+
   return (
     <EventContext.Provider
       value={{
@@ -156,7 +166,8 @@ if(!user) return "❌ You must be logged in to unbook.";
         bookEvent,
         unbookEvent,
         getUserBookings,
-        loading
+        loading,
+        deleteEvent,
       }}
     >
       {children}
