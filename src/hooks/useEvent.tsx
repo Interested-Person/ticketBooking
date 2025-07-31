@@ -20,7 +20,7 @@ import { useAuth } from "./useAuth";
 interface EventContextType {
   ticketsFeed: Event[];
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
-  bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
+  bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<boolean>;
   getUserBookings: (userId: string) => Promise<any[]>;
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
@@ -78,9 +78,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   //booking an event
-  const bookEvent = async (eventId: string, seatCount: number, userId: string) => {
+  const bookEvent = async (eventId: string, seatCount: number, userId: string): Promise<boolean> => {
     try {
-      if (seatCount <= 0) return;
+      if (seatCount <= 0) return false
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
@@ -105,8 +105,10 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
 
       console.log(`Booked ${seatCount} seats for user ${userId}`);
+      return true
     } catch (error) {
       console.error("Error booking event: ", error);
+      return false
     }
   };
 
