@@ -9,17 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-export interface Event {
-  name: string;
-  totalSeats: number;
-  availableSeats: number;
-  imageURL: string;
-  TheatreName: string;
-  time: Date;
-  description: string;
-  price: number;
-  id: string;
-}
+import type { Event } from "../types";
 
 export const useEvent = () => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
@@ -45,6 +35,9 @@ export const useEvent = () => {
               : new Date(data.time),
           description: data.description,
           price: data.price,
+          totalCapacity: data.totalCapacity ?? data.totalSeats, // fallback if needed
+          availableCapacity: data.availableCapacity ?? data.availableSeats, // fallback if needed
+          museumName: data.museumName ?? data.TheatreName, // fallback if needed
         };
       });
 

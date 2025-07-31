@@ -9,10 +9,10 @@ export interface User {
 }
 export interface Event{
     name:string;
-    totalSeats:number;
-    availableSeats:number;
+    totalCapacity:number;
+    availableCapacity:number;
     imageURL:string;
-    TheatreName:string;
+    museumName:string;
     time:Date
     description:string;
     price:number;

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import EventCard from "../components/EventCard"
 import AddEntry from "../components/Modal/addEntryAdmin"
 const Admin = () => {
+    const [openAddEntry, setOpenAddEntry] = useState(false);
     return (
         <div className="text-white flex flex-col gap-5 py-5">
             {/* <h1>Admin</h1> */}
@@ -11,7 +13,7 @@ const Admin = () => {
             <h2>Currently hosted Tickets</h2>
             <EventCard eventName={"Saiyara"} eventID={"123"} eventTags={[]} eventImg={""}/>
         </section>
-        <AddEntry/>
+        {openAddEntry && <AddEntry onClose={() => setOpenAddEntry(false)} />}
         </div>
     )
 }
