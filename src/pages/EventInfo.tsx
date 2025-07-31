@@ -31,20 +31,23 @@ const EventInfo = () => {
                         </div>
                         {/* Product Details */}
                         <div className="w-full md:w-1/2 px-4">
-                            <h2 className="text-3xl font-bold mb-2">{event.name}</h2>
+                            <h2 className="text-3xl font-bold mb-2">{event.name}, at {event.museumName}</h2>
                             <div className="mb-4">
                                 <span className="text-2xl font-bold mr-2">₹{event.price}</span>
                             </div>
 
-                            <p className="text-white mb-6">
-                                {event.description}
-                            </p>
+                            <div className="text-white mb-6">
+                                On {`${event.time.getDate()}/${event.time.getMonth() + 1}/${event.time.getFullYear()} at ${event.time.getHours()}:${event.time.getMinutes()}`}<br />
+                                <div></div>
+                                Description: {event.description}
+
+                            </div>
 
 
                             <div className="flex space-x-4 mb-6">
 
 
-                              
+
                                 <div className="flex items-center">
                                     <button onClick={() => { if (!user) return; bookEvent(event.id, quantity, user.uid) }} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
                                         Book tickets
@@ -58,7 +61,7 @@ const EventInfo = () => {
                                         </label>
                                         <div className=" relative flex items-center ">
                                             <button
-                                                onClick={() => setQuantity((prev)=>(prev-1))}
+                                                onClick={() => setQuantity((prev) => (prev - 1))}
                                                 type="button"
                                                 id="decrement-button"
                                                 data-input-counter-decrement="bedrooms-input"
@@ -89,7 +92,7 @@ const EventInfo = () => {
                                                 className=" items-center m-auto appearance-none bg-gray-50 border-x-0 border-gray-300  font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder=""
                                                 value={quantity}
-                                                onChange={()=>{}}
+                                                onChange={() => { }}
 
                                             />
 
@@ -124,8 +127,10 @@ const EventInfo = () => {
                                     {/**input */}
                                 </div>
 
-                            </div>
 
+
+                            </div>
+                            <div>{event.availableCapacity} tickets available out of {event.totalCapacity}</div>
                         </div>
                     </div>
                 </div>
