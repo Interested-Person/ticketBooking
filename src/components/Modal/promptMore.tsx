@@ -1,10 +1,10 @@
 import React from "react";
 
-type MerchantPromptProps = {
+type PromptProps = {
   onSelect: ({ age, gender }: {age:number,gender:string}) => void;
 };
 
-const MerchantPrompt: React.FC<MerchantPromptProps> = ({ onSelect }) => {
+const promptMore: React.FC<PromptProps> = ({ onSelect }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -55,4 +55,4 @@ const MerchantPrompt: React.FC<MerchantPromptProps> = ({ onSelect }) => {
   );
 };
 
-export default MerchantPrompt;
+export default promptMore;
