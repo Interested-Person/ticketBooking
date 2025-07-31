@@ -21,7 +21,7 @@ interface EventContextType {
   ticketsFeed: Event[];
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<boolean>;
-  getUserBookings: (userId: string) => Promise<any[]>;
+  getUserBookings: (userId: string) => Promise<any[]>
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
   deleteEvent: (eventID: string) => Promise<void>;
@@ -117,7 +117,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 
   //
-   const bookEventAI = async (eventId: string, seatCount: number, userId: string) => {
+  const bookEventAI = async (eventId: string, seatCount: number, userId: string) => {
     // console.log
     try {
       if (seatCount <= 0) return "less than 1 seat  ";
@@ -143,7 +143,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         seatCount,
         timestamp: Timestamp.now(),
       });
-return `✅ Booked ${seatCount} seats for event ${eventId}.`;
+      return `✅ Booked ${seatCount} seats for event ${eventId}.`;
     } catch (error) {
       console.error("Error booking event: ", error);
       return "❌ Failed to book event.";
