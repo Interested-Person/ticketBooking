@@ -1,10 +1,20 @@
 import EventCard from '../components/EventCard'
-
+import { useEvent } from '../hooks/useEvent'
 const Home = () => {
+    const { ticketsFeed } = useEvent()
     return (
         <div>
             <h1>Home</h1>
-            <EventCard eventID='1' eventTags={['tag1', 'tag2', 'tag3']} eventName='event1' eventImg='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Example_image.svg/600px-Example_image.svg.png' />
+            <div className='flex gap-5'>
+                {ticketsFeed.map((event) => (
+                    <EventCard
+                        key={event.id}
+                        eventID={event.id}
+                        eventImg={event.imageURL}
+                        eventName={event.name}
+                    />
+                ))}
+            </div>
 
 
         </div>

@@ -61,7 +61,7 @@ const EventInfo = () => {
                                     />
                                 </div> */}
                                 <div className="flex">
-                                    <button className="bg-sky-700 mr-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-md ">
+                                    <button className="bg-sky-700 mr-5  hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded-md ">
                                         Button
                                     </button>
                                     <form className="max-w-30 mx-auto">
