@@ -26,6 +26,10 @@ interface EventContextType {
   unbookEvent: (id: string) => Promise<string>;
   deleteEvent: (eventID: string) => Promise<void>;
   bookEventAI: (eventId: string, seatCount: number, userId: string) => Promise<string>;
+    searchFeed: Event[];
+  setSearchFeed: React.Dispatch<React.SetStateAction<Event[]>>;
+  isSearching: boolean;
+  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventContext = createContext<EventContextType | null>(null);
@@ -33,6 +37,9 @@ const EventContext = createContext<EventContextType | null>(null);
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchFeed, setSearchFeed] = useState<Event[]>([]);
+const [isSearching, setIsSearching] = useState<boolean>(false);
+
   const { user } = useAuth();
   useEffect(() => {
     setLoading(true);
@@ -200,17 +207,22 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <EventContext.Provider
-      value={{
-        ticketsFeed,
-        addEvent,
-        bookEvent,
-        unbookEvent,
-        getUserBookings,
-        loading,
-        deleteEvent,
-        bookEventAI,
-      }}
-    >
+  value={{
+    ticketsFeed,
+    addEvent,
+    bookEvent,
+    unbookEvent,
+    getUserBookings,
+    loading,
+    deleteEvent,
+    bookEventAI,
+    searchFeed,
+    setSearchFeed,
+    isSearching,
+    setIsSearching,
+  }}
+>
+
       {children}
     </EventContext.Provider>
   );
