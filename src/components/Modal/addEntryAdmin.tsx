@@ -13,7 +13,7 @@ const defaultFormData: Partial<Omit<Event, "id">> = {
   description: "",
 };
 
-export default function AddEntry({onClose}: { onClose: () => void }) {
+export default function AddEntry({ onClose }: { onClose: () => void }) {
   const { addEvent } = useEvent();
   const [formData, setFormData] = useState<Partial<Omit<Event, "id">>>(defaultFormData);
 
@@ -133,6 +133,12 @@ export default function AddEntry({onClose}: { onClose: () => void }) {
             className="w-full mt-4 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
           >
             Submit Event
+          </button>
+          <button
+          onClick={()=>onClose()}
+            className="w-full mt-4 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
+          >
+            Cancel
           </button>
         </form>
       </div>

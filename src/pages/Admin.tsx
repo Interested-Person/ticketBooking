@@ -9,10 +9,7 @@ const Admin = () => {
             <section className="flex items-center justify-center ">
                 <button className="bg-sky-500 p-2 rounded-md " onClick={()=>{setOpenAddEntry(true)}}>Add new entry</button>
             </section>
-        <section className="flex flex-col items-center justify-center gap-4">
-            <h2>Currently hosted Tickets</h2>
-            <EventCard eventName={"Saiyara"} eventID={"123"} eventTags={[]} eventImg={""}/>
-        </section>
+      
         {openAddEntry && <AddEntry onClose={() => setOpenAddEntry(false)} />}
         </div>
     )
