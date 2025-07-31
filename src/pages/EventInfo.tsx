@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import placeholder from '../assets/placeholder.png'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEvent } from "../hooks/useEvent";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../hooks/useAuth";
+import { useUser } from "../hooks/useUser";
+
 
 const EventInfo = () => {
     //We inport the ticket feed from hooks
@@ -13,7 +15,26 @@ const EventInfo = () => {
     const event = ticketsFeed.find((e) => e.id === eventID);
     const { user } = useAuth()
     const [quantity, setQuantity] = useState(0);
+    const [currentTotal, setCurrentTotal] = useState(0); //to store total cost
+    const { wallet, editWallet } = useUser();
+    useEffect(() => {
+        setCurrentTotal(event ? quantity * event.price : 0);
+    }, [quantity]);
     if (!event) return <LoadingSpinner />
+
+
+
+    const handleBuy = async () => {
+        if (!user) return;
+        if (currentTotal > wallet) return alert("Insufficient funds");
+        else if (event.availableCapacity < quantity) return alert("Not enough seats available");
+        else {
+
+            if (await bookEvent(event.id, quantity, user.uid))
+                editWallet(-1 * currentTotal)
+        }
+
+    }
     return (
         <div className="bg-slate-950 text-white">
             <div className="bg-slate-950">
@@ -31,7 +52,7 @@ const EventInfo = () => {
                         </div>
                         {/* Product Details */}
                         <div className="w-full md:w-1/2 px-4">
-                            <h2 className="text-3xl font-bold mb-2">{event.name}, at {event.museumName}</h2>
+                            <h2 className="text-4xl font-bold mb-2">{event.name}, at {event.museumName}</h2>
                             <div className="mb-4">
                                 <span className="text-2xl font-bold mr-2">₹{event.price}</span>
                             </div>
@@ -49,7 +70,7 @@ const EventInfo = () => {
 
 
                                 <div className="flex items-center">
-                                    <button onClick={() => { if (!user) return; bookEvent(event.id, quantity, user.uid) }} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
+                                    <button onClick={() => { if (!user) return; handleBuy() }} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
                                         Book tickets
                                     </button>
                                     <form className="max-w-30 ">
@@ -130,7 +151,9 @@ const EventInfo = () => {
 
 
                             </div>
-                            <div>{event.availableCapacity} tickets available out of {event.totalCapacity}</div>
+                            <div className="mb-1">{event.availableCapacity} tickets available out of {event.totalCapacity}</div>
+                            <div className="text-3xl">Total: ₹{currentTotal}</div>
+                            <div className="text-3xl">Available funds: ₹{wallet}</div>
                         </div>
                     </div>
                 </div>
