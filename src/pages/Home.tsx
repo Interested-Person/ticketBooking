@@ -8,10 +8,7 @@ const Home = () => {
             <div className='flex gap-5'>
                 {ticketsFeed.map((event) => (
                     <EventCard
-                        key={event.id}
-                        eventID={event.id}
-                        eventImg={event.imageURL}
-                        eventName={event.name}
+                        event={event}
                     />
                 ))}
             </div>
