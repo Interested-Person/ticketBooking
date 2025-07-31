@@ -20,6 +20,7 @@ const Admin = () => {
             <div className="flex gap-5">
                 {ticketsFeed.map((event) => (
                     <EventCard
+                    key={event.id}
                         event={event}
                         whatPage="admin"
                     />

@@ -71,8 +71,8 @@ export default function AddEntry({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-sky-900/60 flex items-center justify-center p-4">
-      <div className="bg-cyan-700 rounded-2xl shadow-xl p-6 w-full max-w-lg">
+    <div className="fixed inset-0 z-50 bg-sky-900/60  overflow-y-scroll hide-scrollbar justify-center  p-4">
+      <div className="bg-cyan-700  rounded-2xl shadow-xl p-6 w-full max-w-lg">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">
           Add New Event
         </h2>
@@ -130,13 +130,13 @@ export default function AddEntry({ onClose }: { onClose: () => void }) {
 
           <button
             type="submit"
-            className="w-full mt-4 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
+            className="w-full mt-2 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
           >
             Submit Event
           </button>
           <button
           onClick={()=>onClose()}
-            className="w-full mt-4 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
+            className="w-full mt-2 bg-sky-300 cursor-pointer hover:bg-sky-500 text-black py-2 rounded-lg text-lg font-semibold transition duration-200"
           >
             Cancel
           </button>
