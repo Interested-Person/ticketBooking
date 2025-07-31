@@ -96,10 +96,41 @@ User: ${prompt}`,
       return "❌ Oops! Something went wrong.";
     }
   };
+  const improveContent = async (prompt: string) => {
+    if (!user) return "❌ You must be logged in to use this feature.";
+
+    try {
+    
+      const chatContext = [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `You are a helpful AI assistant for a museum. You will be given a description of an event and you have to improve it. You are supposed to return the first best-fit improvement with no futher text. User:${prompt}`,
+            },
+          ],
+        },
+      ];
+
+      const result = await ai.models.generateContent({
+        model: "gemini-2.5-flash-lite",
+        contents: chatContext,
+      });
+
+      const text = result.text ?? "";
+
+    
+      return text;
+    } catch (error) {
+      console.error("Gemini error:", error);
+      return "❌ Oops! Something went wrong.";
+    }
+  };
 
   return {
     generateContent,
     getUserBookings,
     getEventBookingStatus,
+    improveContent
   };
 };
