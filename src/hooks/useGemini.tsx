@@ -1,81 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
 import { useEvent } from "./useEvent";
-import { auth, db } from "../firebase";
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDocs,
-  Timestamp,
-} from "firebase/firestore";
+import { useAuth } from "./useAuth";
 
 const ai = new GoogleGenAI({
   apiKey: "AIzaSyC0rL9Eswolp56Is0CqK9UsCF1GAp-23ok", 
 });
 
 export const useGemini = () => {
-  const { ticketsFeed } = useEvent();
-  const user = auth.currentUser;
-
-  const bookEvent = async (id: string, seatCount: number) => {
-    if (!user) return "❌ You must be logged in to book.";
-
-    try {
-      await addDoc(collection(db, "bookings"), {
-        uid: user.uid,
-        id,
-        seatCount,
-        bookedAt: Timestamp.now(),
-      });
-      return `✅ Successfully booked ${seatCount} seat(s) for event ${id}`;
-    } catch (error) {
-      console.error("Booking error:", error);
-      return "❌ Failed to book. Please try again.";
-    }
-  };
-
-  const unbookEvent = async (id: string) => {
-    if (!user) return "❌ You must be logged in to unbook.";
-
-    try {
-      const q = query(
-        collection(db, "bookings"),
-        where("uid", "==", user.uid),
-        where("id", "==", id)
-      );
-      const snapshot = await getDocs(q);
-      snapshot.forEach(async (docSnap) => {
-        await deleteDoc(doc(db, "bookings", docSnap.id));
-      });
-      return `✅ Booking for event ${id} cancelled.`;
-    } catch (error) {
-      console.error("Unbooking error:", error);
-      return "❌ Failed to cancel booking.";
-    }
-  };
-
-  const getUserBookings = async () => {
-    if (!user) return [];
-    const q = query(collection(db, "bookings"), where("uid", "==", user.uid));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-  };
+  const { ticketsFeed, bookEvent,unbookEvent,getUserBookings } = useEvent();
+  const {user} = useAuth();
 
   const getEventBookingStatus = async () => {
-    const bookings = await getUserBookings();
+    if(!user) return [];
+    const bookings = await getUserBookings(user.uid);
     const bookedids = bookings.map((b) => b.id);
     return bookedids;
   };
 
   const generateContent = async (prompt: string, history: string[]) => {
+    if(!user) return "❌ You must be logged in to use this feature.";
     try {
-      const userBookings = await getUserBookings();
+      const userBookings = await getUserBookings(user.uid);
       const bookedIds = new Set(userBookings.map((b) => b.id));
 
       const formattedTickets = ticketsFeed
@@ -126,7 +71,7 @@ User: ${prompt}`,
         if (match) {
           const [, id, seatStr] = match;
           const seatCount = parseInt(seatStr);
-          return await bookEvent(id, seatCount);
+          return await bookEvent(id, seatCount,user?.uid);
         }
       } else if (text.startsWith("__UNBOOK__")) {
         const match = text.match(/event_id=(\w+)/);

@@ -3,19 +3,21 @@ import placeholder from '../assets/placeholder.png'
 import Rating from "../components/Review";
 import { useState } from "react";
 import { useEvent } from "../hooks/useEvent";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useAuth } from "../hooks/useAuth";
 
 const EventInfo = () => {
     //We inport the ticket feed from hooks
-    const { ticketsFeed } = useEvent();
+    const { ticketsFeed, bookEvent } = useEvent();
     //We grab the eventID from the URL parameters
     const { eventID } = useParams();
 
     const event = ticketsFeed.find((e) => e.id === eventID);
 
-    if (!event) return <div className="text-white">Loading event...</div>;
+    if (!event) return <LoadingSpinner />
 
 
-
+    const { user } = useAuth()
 
     const [quantity, setQuantity] = useState(0);
     return (
@@ -66,7 +68,7 @@ const EventInfo = () => {
                                     />
                                 </div> */}
                                 <div className="flex items-center">
-                                    <button className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
+                                    <button onClick={() => { if(!user) return; bookEvent(event.id, quantity, user.uid)}} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
                                         Book tickets
                                     </button>
                                     <form className="max-w-30 ">

@@ -11,9 +11,11 @@ import {
   updateDoc,
   where,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import type { Event } from "../types";
+import { useAuth } from "./useAuth";
 
 interface EventContextType {
   ticketsFeed: Event[];
@@ -21,6 +23,7 @@ interface EventContextType {
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
   getUserBookings: (userId: string) => Promise<any[]>;
   loading:boolean;
+  unbookEvent: (id: string) => Promise<string>; 
 }
 
 const EventContext = createContext<EventContextType | null>(null);
@@ -28,6 +31,7 @@ const EventContext = createContext<EventContextType | null>(null);
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
   const [loading,setLoading] = useState(false);
+  const {user} = useAuth();
   useEffect(() => {
     setLoading(true);
     const eventsRef = collection(db, "events");
@@ -39,8 +43,6 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return {
           id: doc.id,
           name: data.name,
-          totalSeats: data.totalSeats,
-          availableSeats: data.availableSeats,
           imageURL: data.imageURL,
           TheatreName: data.TheatreName,
           time:
@@ -49,9 +51,9 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               : new Date(data.time),
           description: data.description,
           price: data.price,
-          totalCapacity: data.totalCapacity ?? data.totalSeats,
-          availableCapacity: data.availableCapacity ?? data.availableSeats,
-          museumName: data.museumName ?? data.TheatreName,
+          totalCapacity: data.totalCapacity ,
+          availableCapacity: data.availableCapacity ,
+          museumName: data.museumName ,
         };
       });
 
@@ -62,6 +64,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => unsubscribe();
   }, []);
 
+  //for admins
   const addEvent = async (formData: Omit<Event, "id">) => {
     try {
       await addDoc(collection(db, "events"), {
@@ -73,22 +76,24 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  //booking an event
   const bookEvent = async (eventId: string, seatCount: number, userId: string) => {
     try {
+      if(seatCount <= 0) return;
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
       if (!eventSnap.exists()) throw new Error("Event not found");
 
       const eventData = eventSnap.data();
-      const currentSeats = eventData.availableSeats ?? 0;
+      const currentCapacity = eventData.availableCapacity ?? 0;
 
-      if (currentSeats < seatCount) {
+      if (currentCapacity < seatCount) {
         throw new Error("Not enough seats available");
       }
 
       await updateDoc(eventRef, {
-        availableSeats: currentSeats - seatCount,
+        availableCapacity: currentCapacity - seatCount,
       });
 
       await addDoc(collection(db, "bookings"), {
@@ -103,6 +108,27 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.error("Error booking event: ", error);
     }
   };
+
+const unbookEvent = async (id: string) => {
+if(!user) return "❌ You must be logged in to unbook.";
+    try {
+      const q = query(
+        collection(db, "bookings"),
+        where("uid", "==", user.uid),
+        where("id", "==", id)
+      );
+      const snapshot = await getDocs(q);
+      snapshot.forEach(async (docSnap) => {
+        await deleteDoc(doc(db, "bookings", docSnap.id));
+      });
+      return `✅ Booking for event ${id} cancelled.`;
+    } catch (error) {
+      console.error("Unbooking error:", error);
+      return "❌ Failed to cancel booking.";
+    }
+  };
+
+  
 
   const getUserBookings = async (userId: string) => {
     try {
@@ -128,6 +154,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         ticketsFeed,
         addEvent,
         bookEvent,
+        unbookEvent,
         getUserBookings,
         loading
       }}
