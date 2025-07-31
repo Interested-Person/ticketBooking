@@ -13,16 +13,17 @@ export default function Navbar() {
     const { completeRegistration, isLoggedIn, user, needsInfo } = useAuth();
     return (<>
         <nav className="bg-sky-950 w-screen items-center px-4 text-white h-16 flex justify-between">
-            <div className="flex items-center ">
-                <img onClick={() => navigate("/")} src="/logo.svg" className="h-16" alt="" />
+
+            <div className="flex items-center gap-2">
+                <img onClick={() => navigate("/")} src="/logo.svg" className="h-16 cursor-pointer" alt="" />
             </div>
-            {isLoggedIn ? (<div>
+            {isLoggedIn ? (<div className="cursor-pointer"  >
 
                 <img onClick={() => navigate("/account")} referrerPolicy="no-referrer" className="w-10 rounded-full" loading="lazy" src={user?.pfpUrl} alt="" />
 
             </div>) : (
 
-                <button onClick={handleLogin}>Login</button>
+                <button className="cursor-pointer" onClick={handleLogin}>Login</button>
             )}
 
         </nav>

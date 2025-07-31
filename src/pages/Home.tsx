@@ -12,10 +12,7 @@ const Home = () => {
             <div className='flex p-4 basis-1/2 flex-wrap md:basis-1/3 xl:basis-1/4 gap-5'>
                 {ticketsFeed.map((event) => (
                     <EventCard
-                        key={event.id}
-                        eventID={event.id}
-                        eventImg={event.imageURL}
-                        eventName={event.name}
+                        event={event}
                     />
                 ))}
             </div>

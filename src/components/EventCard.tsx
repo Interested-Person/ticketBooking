@@ -1,24 +1,32 @@
 
 import placeholder from '../assets/placeholder.png'
 import { useNavigate } from 'react-router-dom'
+import EventCardTag from '../modals/EventCardTag'
+import type { Event } from '../types'
 
-const EventCard = ({ eventName, eventID, eventImg }: { eventName: string, eventID: string, eventImg?: string }) => {
+const EventCard = ({ event }: { event: Event }) => {
+    const eventName = event.name
+    const eventID = event.id
+    const eventImg = event.imageURL
+    const price = event.price
+    const date = event.time
+
     const navigate = useNavigate()
     return (
         <div className="max-w-40 md:max-w-64 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <a href="#">
+            <div className="cursor-pointer" onClick={() => navigate("/event/" + eventID || "")}>
                 <img className="rounded-t-lg w-full" src={eventImg || placeholder} alt="" />
-            </a>
+            </div>
             <div className="p-2">
                 <div >
-                    <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    <div onClick={() => navigate("/event/" + eventID || "")} className="cursor-pointer mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         {eventName}
-                    </h5>
+                    </div>
                 </div>
                 {/* <div className="hide-scrollbar max-w-full overflow-scroll  flex  mb-2 font-normal text-gray-700 dark:text-gray-400">
                     {eventTags.map((tag, index) => <EventCardTag colour='default' tag={tag || ""} key={index} />)}
                 </div>  REMOVED TAGS*/}
-                <button
+                {/* <button
                     onClick={() => { navigate("/event/" + eventID) }}
                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
@@ -38,7 +46,11 @@ const EventCard = ({ eventName, eventID, eventImg }: { eventName: string, eventI
                             d="M1 5h12m0 0L9 1m4 4L9 9"
                         />
                     </svg>
-                </button>
+                </button> */} {/**removed button */}
+                <div className='flex '>
+                    <EventCardTag colour='pink' tag={"₹" + String(price)} />
+                    <EventCardTag colour='indigo' tag={date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} />
+                </div>
             </div>
         </div>
 

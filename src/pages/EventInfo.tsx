@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import placeholder from '../assets/placeholder.png'
-import Rating from "../components/Review";
 import { useState } from "react";
 import { useEvent } from "../hooks/useEvent";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -13,7 +12,6 @@ const EventInfo = () => {
     const { eventID } = useParams();
 
     const event = ticketsFeed.find((e) => e.id === eventID);
-
     if (!event) return <LoadingSpinner />
 
 
@@ -41,8 +39,7 @@ const EventInfo = () => {
                             <div className="mb-4">
                                 <span className="text-2xl font-bold mr-2">₹{event.price}</span>
                             </div>
-                            {/**ADD REVIEWS RATING STARS HERE */}
-                            <Rating rating={4}></Rating>
+
                             <p className="text-white mb-6">
                                 {event.description}
                             </p>
@@ -158,3 +155,4 @@ const EventInfo = () => {
 }
 
 export default EventInfo
+
