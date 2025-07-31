@@ -1,8 +1,16 @@
 
 import placeholder from '../assets/placeholder.png'
 import { useNavigate } from 'react-router-dom'
+import EventCardTag from '../modals/EventCardTag'
+import type { Event } from '../types'
 
-const EventCard = ({ eventName, eventID, eventImg }: { eventName: string, eventID: string, eventImg?: string }) => {
+const EventCard = ({ event }: { event: Event }) => {
+    const eventName = event.name
+    const eventID = event.id
+    const eventImg = event.imageURL
+    const price = event.price
+    const date = event.time
+
     const navigate = useNavigate()
     return (
         <div className="max-w-40 md:max-w-64 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -39,6 +47,10 @@ const EventCard = ({ eventName, eventID, eventImg }: { eventName: string, eventI
                         />
                     </svg>
                 </button> */} {/**removed button */}
+                <div className='flex '>
+                    <EventCardTag colour='pink' tag={"₹" + String(price)} />
+                    <EventCardTag colour='indigo' tag={date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} />
+                </div>
             </div>
         </div>
 
