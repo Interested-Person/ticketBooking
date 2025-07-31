@@ -2,55 +2,58 @@ import { GoogleGenAI } from "@google/genai";
 import { useEvent } from "./useEvent";
 import { useAuth } from "./useAuth";
 
+
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyC0rL9Eswolp56Is0CqK9UsCF1GAp-23ok", 
+  apiKey: "AIzaSyC0rL9Eswolp56Is0CqK9UsCF1GAp-23ok",
 });
 
 export const useGemini = () => {
-  const { ticketsFeed, bookEvent,unbookEvent,getUserBookings } = useEvent();
-  const {user} = useAuth();
+  const { ticketsFeed, unbookEvent, getUserBookings,bookEvent } = useEvent();
+  const { user } = useAuth();
 
   const getEventBookingStatus = async () => {
-    if(!user) return [];
+    if (!user) return [];
     const bookings = await getUserBookings(user.uid);
-    const bookedids = bookings.map((b) => b.id);
-    return bookedids;
+    return bookings.map((b) => b.id);
   };
 
   const generateContent = async (prompt: string, history: string[]) => {
-    if(!user) return "❌ You must be logged in to use this feature.";
+    if (!user) return "❌ You must be logged in to use this feature.";
+
     try {
       const userBookings = await getUserBookings(user.uid);
       const bookedIds = new Set(userBookings.map((b) => b.id));
 
-      const formattedTickets = ticketsFeed
-        ?.map((ticket, index) => {
+      // Build ticket-to-index map
+      const idMap: string[] = [];
+      const formattedTickets =
+        ticketsFeed?.map((ticket, index) => {
+          idMap.push(ticket.id); // index 0 = event 1
           const isBooked = bookedIds.has(ticket.id);
           return `${index + 1}. ${ticket.name} – ${ticket.time} - Available: ${ticket.availableCapacity
-            } - Museum: ${ticket.museumName} - Description: ${ticket.description} - Price: ${ticket.price
-            } -id${ticket.id}- ${isBooked ? " ✅ Booked by you" : ""}`;
-        })
-        .join("\n") || "No events available.";
+            } - Museum: ${ticket.museumName} - Description: ${ticket.description
+            } - Price: ${ticket.price} ${isBooked ? "✅ Booked by you" : ""}`;
+        }).join("\n") || "No events available.";
 
       const chatContext = [
         {
           role: "user",
           parts: [
             {
-              text: `You are an AI assistant for museum events.
+              text: `You are a helpful AI assistant for a museum.
 
-Here are current events:
+Below are the events:
 ${formattedTickets}
 
-If the user says things like "book 2 seats for event 1", then say exactly this:
-__BOOK__ event_id=<id> seat_count=<count>
+If the user says "book 2 seats for event 1", you must reply with:
+__BOOK__ event_index=1 seat_count=2
 
-If the user says "cancel/unbook event 2", then say:
-__UNBOOK__ event_id=<id>
+If the user says "cancel event 2", reply:
+__UNBOOK__ event_index=2
 
-Otherwise just reply normally.
+Only return the exact commands above for such actions.
 
-Conversation:
+Conversation history:
 ${history.join("\n")}
 User: ${prompt}`,
             },
@@ -65,18 +68,24 @@ User: ${prompt}`,
 
       const text = result.text ?? "";
 
-      // Check if Gemini decided to issue a command
+      // Parse AI instructions
       if (text.startsWith("__BOOK__")) {
-        const match = text.match(/event_id=(\w+)\s+seat_count=(\d+)/);
+        const match = text.match(/event_index=(\d+)\s+seat_count=(\d+)/);
         if (match) {
-          const [, id, seatStr] = match;
+          const [, indexStr, seatStr] = match;
+          const index = parseInt(indexStr) - 1;
           const seatCount = parseInt(seatStr);
-          return await bookEvent(id, seatCount,user?.uid);
+          const id = idMap[index];
+          if (!id) return "❌ Invalid event index.";
+          return await bookEvent(id, seatCount,user.uid);
         }
       } else if (text.startsWith("__UNBOOK__")) {
-        const match = text.match(/event_id=(\w+)/);
+        const match = text.match(/event_index=(\d+)/);
         if (match) {
-          const [, id] = match;
+          const [, indexStr] = match;
+          const index = parseInt(indexStr) - 1;
+          const id = idMap[index];
+          if (!id) return "❌ Invalid event index.";
           return await unbookEvent(id);
         }
       }
@@ -87,7 +96,6 @@ User: ${prompt}`,
       return "❌ Oops! Something went wrong.";
     }
   };
-
 
   return {
     generateContent,

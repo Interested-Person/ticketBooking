@@ -20,7 +20,7 @@ import { useAuth } from "./useAuth";
 interface EventContextType {
   ticketsFeed: Event[];
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
-  bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
+  bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<string>;
   getUserBookings: (userId: string) => Promise<any[]>;
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
@@ -79,12 +79,13 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   //booking an event
   const bookEvent = async (eventId: string, seatCount: number, userId: string) => {
+    // console.log
     try {
-      if (seatCount <= 0) return;
+      if (seatCount <= 0) return "less than 1 seat  ";
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
-      if (!eventSnap.exists()) throw new Error("Event not found");
+      if (!eventSnap.exists()) return "Event not found";
 
       const eventData = eventSnap.data();
       const currentCapacity = eventData.availableCapacity ?? 0;
@@ -103,13 +104,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         seatCount,
         timestamp: Timestamp.now(),
       });
-
-      console.log(`Booked ${seatCount} seats for user ${userId}`);
+return `✅ Booked ${seatCount} seats for event ${eventId}.`;
     } catch (error) {
       console.error("Error booking event: ", error);
+      return "❌ Failed to book event.";
     }
   };
-
   const unbookEvent = async (id: string) => {
     if (!user) return "❌ You must be logged in to unbook.";
     try {
