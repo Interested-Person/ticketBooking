@@ -1,5 +1,4 @@
 
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Admin from './pages/Admin'
@@ -11,7 +10,6 @@ import Chat from './pages/Chat'
 import Account from './pages/Account'
 import { EventProvider } from './hooks/useEvent'
 function App() {
-  // const {completeRegistration} = useAuth();
   return (
     <div className='bg-slate-950 min-h-screen w-screen'>
       <AuthProvider>
@@ -23,7 +21,6 @@ function App() {
             <Route path='/account' element={<Account />}></Route>
             <Route path="/event/:eventID" element={<EventInfo />}></Route>
             <Route path="/chat" element={<Chat />} ></Route>
-
             <Route path="/*" element={<Home />} ></Route>
           </Routes>
         </Router>

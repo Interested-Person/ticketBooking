@@ -20,14 +20,16 @@ interface EventContextType {
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
   getUserBookings: (userId: string) => Promise<any[]>;
+  loading:boolean;
 }
 
 const EventContext = createContext<EventContextType | null>(null);
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
-
+  const [loading,setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     const eventsRef = collection(db, "events");
     const q = query(eventsRef, orderBy("time"));
 
@@ -54,6 +56,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
 
       setTicketFeed(events);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -126,6 +129,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addEvent,
         bookEvent,
         getUserBookings,
+        loading
       }}
     >
       {children}

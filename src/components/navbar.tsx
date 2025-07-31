@@ -13,7 +13,7 @@ export default function Navbar() {
     const { completeRegistration, isLoggedIn, user, needsInfo } = useAuth();
     return (<>
         <nav className="bg-sky-950 w-screen items-center px-4 text-white h-16 flex justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center ">
                 <img onClick={() => navigate("/")} src="/logo.svg" className="h-16" alt="" />
             </div>
             {isLoggedIn ? (<div>

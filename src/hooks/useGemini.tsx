@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyC0rL9Eswolp56Is0CqK9UsCF1GAp-23ok", // ⚠️ Secure this in production!
+  apiKey: "AIzaSyC0rL9Eswolp56Is0CqK9UsCF1GAp-23ok", 
 });
 
 export const useGemini = () => {
