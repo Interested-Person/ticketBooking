@@ -1,5 +1,6 @@
 
 import placeholder from '../assets/placeholder.png'
+import EventCardTag from '../modals/EventCardTag'
 import { useNavigate } from 'react-router-dom'
 
 const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: string, eventID: string, eventTags: string[], eventImg: string }) => {
@@ -15,8 +16,8 @@ const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: str
                         {eventName}
                     </h5>
                 </p>
-                <p className="mb-2 font-normal text-gray-700 dark:text-gray-400">
-                    {eventTags.map((tag, index) => <span key={index}>{tag}</span>)}
+                <p className="hide-scrollbar max-w-full overflow-scroll  flex  mb-2 font-normal text-gray-700 dark:text-gray-400">
+                    {eventTags.map((tag, index) => <EventCardTag colour='default' tag="automobilerepair" key={index} />)}
                 </p>
                 <button
                     onClick={() => { navigate("/event/" + eventID) }}
