@@ -17,7 +17,7 @@ const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: str
                     </h5>
                 </div>
                 <div className="hide-scrollbar max-w-full overflow-scroll  flex  mb-2 font-normal text-gray-700 dark:text-gray-400">
-                    {eventTags.map((tag, index) => <EventCardTag colour='default' tag="automobilerepair" key={index} />)}
+                    {eventTags.map((tag, index) => <EventCardTag colour='default' tag={tag || ""} key={index} />)}
                 </div>
                 <button
                     onClick={() => { navigate("/event/" + eventID) }}
