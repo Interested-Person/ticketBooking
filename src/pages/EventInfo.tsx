@@ -65,7 +65,7 @@ const EventInfo = () => {
                                     />
                                 </div> */}
                                 <div className="flex items-center">
-                                    <button onClick={() => { if(!user) return; bookEvent(event.id, quantity, user.uid)}} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
+                                    <button onClick={() => { if (!user) return; bookEvent(event.id, quantity, user.uid) }} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
                                         Book tickets
                                     </button>
                                     <form className="max-w-30 ">
