@@ -30,6 +30,7 @@ interface EventContextType {
   setSearchFeed: React.Dispatch<React.SetStateAction<Event[]>>;
   isSearching: boolean;
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
+  getEventById: (eventId: string) => Promise<Event | null>;
 }
 
 const EventContext = createContext<EventContextType | null>(null);
@@ -178,23 +179,26 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
 
 
 
-  const getUserBookings = async (userId: string) => {
-    try {
-      const q = query(
-        collection(db, "bookings"),
-        where("userId", "==", userId)
-      );
-      const snapshot = await getDocs(q);
+const getUserBookings = async (userId: string) => {
+  console.log("userId passed to getUserBookings:", userId);
+  const q = query(
+    collection(db, "bookings"),
+    where("userId", "==", userId)
+  );
 
-      return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    } catch (error) {
-      console.error("Error fetching user bookings: ", error);
-      return [];
-    }
-  };
+  const snapshot = await getDocs(q);
+
+  console.log("Bookings fetched:");
+  console.log(snapshot.docs.map(doc => doc.data())); // <== TEMP: add this
+
+  const bookings = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return bookings;
+};
+
 
   const deleteEvent = async (eventID: string) => {
     console.log("hi")
@@ -204,6 +208,24 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
       console.error("Error deleting event: ", error);
     }
   };
+
+
+const getEventById = async (eventId: string): Promise<Event | null> => {
+  try {
+    const docRef = doc(db, "events", eventId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Event;
+    } else {
+      console.warn("No such event!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    return null;
+  }
+};
 
   return (
     <EventContext.Provider
@@ -220,6 +242,7 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
     setSearchFeed,
     isSearching,
     setIsSearching,
+    getEventById,
   }}
 >
 

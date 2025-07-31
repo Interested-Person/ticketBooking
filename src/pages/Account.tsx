@@ -53,6 +53,12 @@ const Account = () => {
             Add Money
           </button>
         </form>
+        <button
+          onClick={() => navigate("/bookings")}
+          className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold"
+        >
+          My Bookings
+        </button>
         {user?.isAdmin && <button
           onClick={() => navigate("/admin")}
           className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold"

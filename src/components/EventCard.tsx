@@ -11,7 +11,10 @@ const EventCard = ({ event, whatPage }: { event: Event, whatPage?: string }) => 
     const eventID = event.id
     const eventImg = event.imageURL
     const price = event.price
-    const date = event.time
+    // @ts-ignore
+    const date = event.time?.toDate?.() ?? new Date(); // safe fallback
+
+
 
     const navigate = useNavigate()
 
