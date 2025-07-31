@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useUser } from "../hooks/useUser";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Account = () => {
   const { user, logOut } = useAuth();
-  const { wallet, editWallet } = useUser();
+  const { wallet, editWallet,loading } = useUser();
   const [moneyToAdd, setMoneyToAdd] = useState(0);
 
   const handleSubmit = async () => {
     if (moneyToAdd > 0) await editWallet(moneyToAdd);
     setMoneyToAdd(0);
   };
+  if(loading) return <LoadingSpinner/>
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-cyan-900 text-white flex items-center justify-center p-6">
@@ -19,7 +21,6 @@ const Account = () => {
         loading="lazy"
         referrerPolicy="no-referrer"
           src={user?.pfpUrl}
-          alt="Profile"
           className="w-24 h-24 rounded-full mx-auto border-4 border-cyan-400 shadow-md"
         />
         <div className="space-y-2">

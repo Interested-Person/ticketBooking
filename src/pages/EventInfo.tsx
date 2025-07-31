@@ -10,14 +10,10 @@ const EventInfo = () => {
     const { ticketsFeed, bookEvent } = useEvent();
     //We grab the eventID from the URL parameters
     const { eventID } = useParams();
-
     const event = ticketsFeed.find((e) => e.id === eventID);
-    if (!event) return <LoadingSpinner />
-
-
     const { user } = useAuth()
-
     const [quantity, setQuantity] = useState(0);
+    if (!event) return <LoadingSpinner />
     return (
         <div className="bg-slate-950 text-white">
             <div className="bg-slate-950">
@@ -48,22 +44,7 @@ const EventInfo = () => {
                             <div className="flex space-x-4 mb-6">
 
 
-                                {/* <div className="mb-6">
-                                    <label
-                                        htmlFor="quantity"
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                    >
-                                        Quantity:
-                                    </label>
-                                    <input
-                                        type="number"
-                                        id="quantity"
-                                        name="quantity"
-                                        min={1}
-                                        defaultValue={1}
-                                        className="w-12 text-center rounded-md border-gray-300  shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    />
-                                </div> */}
+                              
                                 <div className="flex items-center">
                                     <button onClick={() => { if(!user) return; bookEvent(event.id, quantity, user.uid)}} className="bg-sky-700 mr-5 h-12  hover:bg-blue-700 text-white font-bold  px-4 border border-blue-700 rounded-md ">
                                         Book tickets
@@ -77,7 +58,7 @@ const EventInfo = () => {
                                         </label>
                                         <div className=" relative flex items-center ">
                                             <button
-                                                onClick={() => setQuantity(quantity - 1)}
+                                                onClick={() => setQuantity((prev)=>(prev-1))}
                                                 type="button"
                                                 id="decrement-button"
                                                 data-input-counter-decrement="bedrooms-input"
@@ -105,10 +86,10 @@ const EventInfo = () => {
                                                 data-input-counter=""
                                                 data-input-counter-min={1}
                                                 data-input-counter-max={5}
-                                                aria-describedby="helper-text-explanation"
                                                 className=" items-center m-auto appearance-none bg-gray-50 border-x-0 border-gray-300  font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder=""
                                                 value={quantity}
+                                                onChange={()=>{}}
 
                                             />
 

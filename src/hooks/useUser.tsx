@@ -14,14 +14,15 @@ import { useAuth } from "./useAuth";
 export const useUser = () => {
     const { user } = useAuth();
     const [wallet, setWallet] = useState(0)
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (!user) return;
-
+        setLoading(true);
         const userDoc = doc(db, "users", user.uid);
         const unsubscribe = onSnapshot(userDoc, (snap) => {
             const data = snap.data();
             setWallet(data?.wallet || 0)
+            setLoading(false);
         });
 
         return () => unsubscribe();
@@ -34,6 +35,6 @@ export const useUser = () => {
         await setDoc(userRef, { wallet: (wallet + amount) }, { merge: true });
     }
 
-    return { wallet, editWallet };
+    return { wallet, editWallet, loading };
 };
 
