@@ -9,11 +9,13 @@ import Navbar from './components/navbar'
 import EventInfo from './pages/EventInfo'
 import Chat from './pages/Chat'
 import Account from './pages/Account'
+import { EventProvider } from './hooks/useEvent'
 function App() {
   // const {completeRegistration} = useAuth();
   return (
     <div className='bg-slate-950 min-h-screen w-screen'>
       <AuthProvider>
+        <EventProvider>
         <Router>
           <Navbar />
           <Routes>
@@ -25,6 +27,7 @@ function App() {
             <Route path="/*" element={<Home />} ></Route>
           </Routes>
         </Router>
+        </EventProvider>
       </AuthProvider>
     </div>
   )

@@ -11,13 +11,15 @@ const Chat: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
-  const {generateContent} =useGemini()
+    const { generateContent } = useGemini();
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
     const handleSend = () => {
         if (!input.trim()) return;
+
         const userMessage: Message = {
             id: Date.now(),
             text: input,
@@ -26,11 +28,10 @@ const Chat: React.FC = () => {
         setMessages((prev) => [...prev, userMessage]);
         setInput('');
 
-        // Simulate bot response
-        setTimeout(async() => {
+        setTimeout(async () => {
             const botMessage: Message = {
                 id: Date.now() + 1,
-                text:await generateContent(input,messages.map(msg => msg.text))||"Something went wrong!", 
+                text: await generateContent(input, messages.map(msg => msg.text)) || "Something went wrong!",
                 sender: 'bot',
             };
             setMessages((prev) => [...prev, botMessage]);
@@ -42,38 +43,40 @@ const Chat: React.FC = () => {
     };
 
     return (
-        <div style={{ maxWidth: 500, margin: '40px auto', border: '1px solid #ccc', borderRadius: 8, padding: 16, background: '#fafafa' }}>
-            <h2>Chat</h2>
-            <div style={{ height: 300, overflowY: 'auto', marginBottom: 16, background: '#fff', padding: 8, borderRadius: 4, border: '1px solid #eee' }}>
+        <div className="h-[calc(100vh-4rem)] w-screen flex flex-col p-4 bg-sky-900">
+            <div className="flex-1 overflow-y-auto space-y-2">
                 {messages.map((msg) => (
-                    <div key={msg.id} style={{ textAlign: msg.sender === 'user' ? 'right' : 'left', margin: '8px 0' }}>
-                        <span
-                            style={{
-                                display: 'inline-block',
-                                padding: '8px 12px',
-                                borderRadius: 16,
-                                background: msg.sender === 'user' ? '#007bff' : '#e9ecef',
-                                color: msg.sender === 'user' ? '#fff' : '#333',
-                                maxWidth: '70%',
-                                wordBreak: 'break-word',
-                            }}
+                    <div
+                        key={msg.id}
+                        className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                        <div
+                            className={`px-4 py-2 rounded-2xl max-w-[70%] break-words ${
+                                msg.sender === 'user'
+                                    ? 'bg-blue-600 text-white rounded-br-none'
+                                    : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                            }`}
                         >
                             {msg.text}
-                        </span>
+                        </div>
                     </div>
                 ))}
                 <div ref={messagesEndRef} />
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
+
+            <div className="mt-4 text-white flex gap-2">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleInputKeyDown}
                     placeholder="Type your message..."
-                    style={{ flex: 1, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+                    className="flex-1 px-4 py-2 rounded border border-gray-300 focus:outline-none"
                 />
-                <button onClick={handleSend} style={{ padding: '8px 16px', borderRadius: 4, background: '#007bff', color: '#fff', border: 'none' }}>
+                <button
+                    onClick={handleSend}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
                     Send
                 </button>
             </div>

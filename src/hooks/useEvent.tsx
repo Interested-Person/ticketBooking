@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   collection,
   addDoc,
@@ -15,10 +15,18 @@ import {
 import { db } from "../firebase";
 import type { Event } from "../types";
 
-export const useEvent = () => {
+interface EventContextType {
+  ticketsFeed: Event[];
+  addEvent: (formData: Omit<Event, "id">) => Promise<void>;
+  bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<void>;
+  getUserBookings: (userId: string) => Promise<any[]>;
+}
+
+const EventContext = createContext<EventContextType | null>(null);
+
+export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
 
-  // 🔄 Realtime fetching of all events
   useEffect(() => {
     const eventsRef = collection(db, "events");
     const q = query(eventsRef, orderBy("time"));
@@ -51,7 +59,6 @@ export const useEvent = () => {
     return () => unsubscribe();
   }, []);
 
-  // ➕ Add a new event
   const addEvent = async (formData: Omit<Event, "id">) => {
     try {
       await addDoc(collection(db, "events"), {
@@ -63,7 +70,6 @@ export const useEvent = () => {
     }
   };
 
-  // ✅ Book seats for an event (with seatCount and userID)
   const bookEvent = async (eventId: string, seatCount: number, userId: string) => {
     try {
       const eventRef = doc(db, "events", eventId);
@@ -78,12 +84,10 @@ export const useEvent = () => {
         throw new Error("Not enough seats available");
       }
 
-      // 👇 Update seat count
       await updateDoc(eventRef, {
         availableSeats: currentSeats - seatCount,
       });
 
-      // 👇 Record the booking
       await addDoc(collection(db, "bookings"), {
         eventId,
         userId,
@@ -97,7 +101,6 @@ export const useEvent = () => {
     }
   };
 
-  // 📥 Fetch bookings by user ID
   const getUserBookings = async (userId: string) => {
     try {
       const q = query(
@@ -116,10 +119,24 @@ export const useEvent = () => {
     }
   };
 
-  return {
-    ticketsFeed,
-    addEvent,
-    bookEvent,
-    getUserBookings,
-  };
+  return (
+    <EventContext.Provider
+      value={{
+        ticketsFeed,
+        addEvent,
+        bookEvent,
+        getUserBookings,
+      }}
+    >
+      {children}
+    </EventContext.Provider>
+  );
+};
+
+export const useEvent = () => {
+  const context = useContext(EventContext);
+  if (!context) {
+    throw new Error("useEvent must be used within an EventProvider");
+  }
+  return context;
 };

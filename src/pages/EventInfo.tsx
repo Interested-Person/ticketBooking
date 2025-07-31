@@ -5,10 +5,13 @@ import { useState } from "react";
 import { useEvent } from "../hooks/useEvent";
 
 const EventInfo = () => {
-    const { ticketsFeed } = useEvent()
-    const { eventID } = useParams(); //EVENT ID
-    ticketsFeed.filter((event) => event.id === eventID)
-    const event = ticketsFeed[0]
+    const { ticketsFeed } = useEvent();
+const { eventID } = useParams();
+
+const event = ticketsFeed.find((e) => e.id === eventID);
+
+if (!event) return <div className="text-white">Loading event...</div>;
+
 
 
 
