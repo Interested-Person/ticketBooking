@@ -13,7 +13,7 @@ export default function Navbar() {
         <nav>
             {isLoggedIn ? (<div>
 
-                <img src={user?.pfpUrl} alt="" />
+                <img referrerPolicy="no-referrer"  loading="lazy" src={user?.pfpUrl} alt="" />
 
             </div>) : (
 
