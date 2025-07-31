@@ -1,4 +1,4 @@
-import { onAuthStateChanged,signOut} from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
@@ -10,6 +10,7 @@ export const useAuth = () => {
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [needsInfo, setNeedsInfo] = useState(false);
     const [firebaseUser, setFirebaseUser] = useState<any>(null); // store user until info is collected
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
@@ -30,6 +31,7 @@ export const useAuth = () => {
                 setLoggedIn(false);
                 setFirebaseUser(null);
                 setNeedsInfo(false);
+
             }
         });
 
@@ -37,7 +39,7 @@ export const useAuth = () => {
     }, []);
 
     // You must call this manually after asking the user
-    const completeRegistration = async ({ age, gender }: {age:number,gender:string}) => {
+    const completeRegistration = async ({ age, gender }: { age: number, gender: string }) => {
         if (!firebaseUser) return;
 
         const newUser: User = {
@@ -55,9 +57,11 @@ export const useAuth = () => {
         setLoggedIn(true);
         setNeedsInfo(false);
     };
-    const logOut=()=>{
+    const logOut = () => {
         signOut(auth)
     }
 
-    return { user, isLoggedIn, needsInfo, completeRegistration, logOut };
+
+
+    return { user, isLoggedIn, needsInfo, completeRegistration, logOut, };
 };

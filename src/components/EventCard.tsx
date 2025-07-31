@@ -1,9 +1,8 @@
 
 import placeholder from '../assets/placeholder.png'
-import EventCardTag from '../modals/EventCardTag'
 import { useNavigate } from 'react-router-dom'
 
-const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: string, eventID: string, eventTags: string[], eventImg: string }) => {
+const EventCard = ({ eventName, eventID, eventImg }: { eventName: string, eventID: string, eventImg?: string }) => {
     const navigate = useNavigate()
     return (
         <div className="max-w-40 md:max-w-64 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -16,9 +15,9 @@ const EventCard = ({ eventName, eventID, eventTags, eventImg }: { eventName: str
                         {eventName}
                     </h5>
                 </div>
-                <div className="hide-scrollbar max-w-full overflow-scroll  flex  mb-2 font-normal text-gray-700 dark:text-gray-400">
+                {/* <div className="hide-scrollbar max-w-full overflow-scroll  flex  mb-2 font-normal text-gray-700 dark:text-gray-400">
                     {eventTags.map((tag, index) => <EventCardTag colour='default' tag={tag || ""} key={index} />)}
-                </div>
+                </div>  REMOVED TAGS*/}
                 <button
                     onClick={() => { navigate("/event/" + eventID) }}
                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
