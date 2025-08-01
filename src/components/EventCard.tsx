@@ -30,10 +30,11 @@ const EventCard = ({ event, whatPage, quantity }: { event: Event, whatPage?: str
                     </div>
                 </div>
 
-                <div className='flex mb-2 overflow-x-scroll hide-scrollbar'>
+                <div className='flex mb-2 flex-wrap hide-scrollbar'>
                     <EventCardTag colour='pink' tag={"₹" + String(price)} />
+                    <EventCardTag colour='yellow' tag={"Qty: " + (quantity)?.toString() || null} />
+
                     <EventCardTag colour='indigo' tag={date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} />
-                    <EventCardTag colour='yellow' tag={(quantity)?.toString() || null} />
                 </div>
                 {whatPage === "admin" && <button
                     onClick={() => { () => console.log("clicked"); deleteEvent(eventID) }}

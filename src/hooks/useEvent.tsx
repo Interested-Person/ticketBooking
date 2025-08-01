@@ -17,12 +17,13 @@ import { db } from "../firebase";
 import type { Event } from "../types";
 import { useAuth } from "./useAuth";
 import { useUser } from "./useUser";
+import type { BookingEvent } from "../pages/Bookings";
 
 interface EventContextType {
   ticketsFeed: Event[];
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<boolean>;
-  getUserBookings: (userId: string) => Promise<Event[]>
+  getUserBookings: (userId: string) => Promise<BookingEvent[]>
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
   deleteEvent: (eventID: string) => Promise<void>;
@@ -190,7 +191,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 
 
-  const getUserBookings = async (userId: string): Promise<Event[]> => {
+  const getUserBookings = async (userId: string): Promise<BookingEvent[]> => {
     console.log("userId passed to getUserBookings:", userId);
     const q = query(
       collection(db, "bookings"),
@@ -205,7 +206,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const bookings = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-    })) as Event[];
+    })) as BookingEvent[];
 
     return bookings;
   };
@@ -241,11 +242,11 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const getQuantity = async (eventId: string): Promise<number> => {
     try {
       if (!user) return 0;
-      const events: Event[] = await getUserBookings(user.uid);
-      const filtered = events.filter((event: Event) => event.id === eventId)
+      const events: BookingEvent[] = await getUserBookings(user.uid);
+      const filtered = events.filter((event: BookingEvent) => event.eventId === eventId)
       let sum = 0
 
-      filtered.forEach((event: any) => {
+      filtered.forEach((event: BookingEvent) => {
         sum += event.seatCount
       });
       return sum
