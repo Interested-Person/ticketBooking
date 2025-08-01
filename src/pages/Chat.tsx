@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGemini } from '../hooks/useGemini';
-
+import ChatIcon from "../assets/chat2.png";
 interface Message {
     id: number;
     text: string;
@@ -43,42 +43,51 @@ const Chat: React.FC = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-4rem)] w-screen flex flex-col p-4 bg-sky-900">
-            <div className="flex-1 overflow-y-auto space-y-2">
-                {messages.map((msg) => (
-                    <div
-                        key={msg.id}
-                        className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                        <div
-                            className={`px-4 py-2 rounded-2xl max-w-[70%] break-words ${
-                                msg.sender === 'user'
-                                    ? 'bg-blue-600 text-white rounded-br-none'
-                                    : 'bg-gray-200 text-gray-800 rounded-bl-none'
-                            }`}
-                        >
-                            {msg.text}
-                        </div>
-                    </div>
-                ))}
-                <div ref={messagesEndRef} />
+        <div className='h-[calc(100vh-4rem)] bg-slate-950'>
+            <div className='bg-sky-700 h-16 w-screen flex items-center text-white '>
+
+                <div className='flex items-center gap-5 p-4'>
+                    <img src={ChatIcon} className='w-12 h-12' alt="" />
+                    <span className='text-xl'>EasyBook AI Agent</span>
+                </div>
             </div>
 
-            <div className="mt-4 text-white flex gap-2">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleInputKeyDown}
-                    placeholder="Type your message..."
-                    className="flex-1 px-4 py-2 rounded border border-gray-300 focus:outline-none"
-                />
-                <button
-                    onClick={handleSend}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    Send
-                </button>
+            <div className=" h-[calc(100vh-8rem)] w-screen flex flex-col p-4 bg-slate-950">
+                <div className="flex-1 overflow-y-auto space-y-2">
+                    {messages.map((msg) => (
+                        <div
+                            key={msg.id}
+                            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                            <div
+                                className={`px-4 py-2 rounded-2xl max-w-[70%] break-words ${msg.sender === 'user'
+                                    ? 'bg-blue-600 text-white rounded-br-none'
+                                    : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                                    }`}
+                            >
+                                {msg.text}
+                            </div>
+                        </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </div>
+
+                <div className="mt-4 text-white flex gap-2">
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleInputKeyDown}
+                        placeholder="Type your message..."
+                        className="flex-1 px-4 py-2 rounded border border-gray-300 focus:outline-none"
+                    />
+                    <button
+                        onClick={handleSend}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Send
+                    </button>
+                </div>
             </div>
         </div>
     );

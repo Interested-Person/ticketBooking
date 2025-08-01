@@ -18,6 +18,7 @@ import type { Event } from "../types";
 import { useAuth } from "./useAuth";
 import { useUser } from "./useUser";
 import type { BookingEvent } from "../pages/Bookings";
+import { useModal } from "./useModal";
 
 interface EventContextType {
   ticketsFeed: Event[];
@@ -41,6 +42,7 @@ const EventContext = createContext<EventContextType | null>(null);
 
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { open } = useModal()
   const { wallet, editWallet } = useUser()
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
@@ -121,6 +123,7 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
 
       console.log(`Booked ${seatCount} seats for user ${userId}`);
+      open(`Booked ${seatCount} seats for user ${userId}`)
       return true
     } catch (error) {
       console.error("Error booking event: ", error);
@@ -163,6 +166,8 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         timestamp: Timestamp.now(),
       });
       editWallet(-1 * totalCost)
+      console.log(`✅ Booked ${seatCount} seats for event ${eventId}.`)
+      open(`✅ Booked ${seatCount} seats for event ${eventId}.`)
       return `✅ Booked ${seatCount} seats for event ${eventId}.`;
     } catch (error) {
       console.error("Error booking event: ", error);

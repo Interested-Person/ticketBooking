@@ -16,8 +16,9 @@ function App() {
   return (
     <div className='bg-slate-950 min-h-screen w-screen'>
       <AuthProvider>
-        <EventProvider>
-          <ModalProvider>
+
+        <ModalProvider>
+          <EventProvider>
             <Router>
               <Navbar />
               <Routes>
@@ -30,10 +31,11 @@ function App() {
               </Routes>
             </Router>
             <Modal />
-          </ModalProvider>
-        </EventProvider>
+          </EventProvider>
+        </ModalProvider>
+
       </AuthProvider>
-    </div>
+    </div >
   )
 }
 
