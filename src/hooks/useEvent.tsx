@@ -16,30 +16,35 @@ import {
 import { db } from "../firebase";
 import type { Event } from "../types";
 import { useAuth } from "./useAuth";
+import { useUser } from "./useUser";
 
 interface EventContextType {
   ticketsFeed: Event[];
   addEvent: (formData: Omit<Event, "id">) => Promise<void>;
   bookEvent: (eventId: string, seatCount: number, userId: string) => Promise<boolean>;
-  getUserBookings: (userId: string) => Promise<any[]>
+  getUserBookings: (userId: string) => Promise<Event[]>
   loading: boolean;
   unbookEvent: (id: string) => Promise<string>;
   deleteEvent: (eventID: string) => Promise<void>;
   bookEventAI: (eventId: string, seatCount: number, userId: string) => Promise<string>;
-    searchFeed: Event[];
+  searchFeed: Event[];
   setSearchFeed: React.Dispatch<React.SetStateAction<Event[]>>;
   isSearching: boolean;
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
   getEventById: (eventId: string) => Promise<Event | null>;
+  getQuantity: (eventId: string) => Promise<number>;
+
 }
 
 const EventContext = createContext<EventContextType | null>(null);
 
+
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { wallet, editWallet } = useUser()
   const [ticketsFeed, setTicketFeed] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchFeed, setSearchFeed] = useState<Event[]>([]);
-const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   const { user } = useAuth();
   useEffect(() => {
@@ -132,14 +137,19 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
       const eventRef = doc(db, "events", eventId);
       const eventSnap = await getDoc(eventRef);
 
+
       if (!eventSnap.exists()) return "Event not found";
 
-      const eventData = eventSnap.data();
+      const eventData: Event = eventSnap.data() as Event;
+      const totalCost = eventData.price * seatCount
       const currentCapacity = eventData.availableCapacity ?? 0;
 
       if (currentCapacity < seatCount) {
         throw new Error("Not enough seats available");
       }
+
+      if (wallet < totalCost) return "Insufficient funds"
+
 
       await updateDoc(eventRef, {
         availableCapacity: currentCapacity - seatCount,
@@ -151,6 +161,7 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
         seatCount,
         timestamp: Timestamp.now(),
       });
+      editWallet(-1 * totalCost)
       return `✅ Booked ${seatCount} seats for event ${eventId}.`;
     } catch (error) {
       console.error("Error booking event: ", error);
@@ -179,25 +190,25 @@ const [isSearching, setIsSearching] = useState<boolean>(false);
 
 
 
-const getUserBookings = async (userId: string) => {
-  console.log("userId passed to getUserBookings:", userId);
-  const q = query(
-    collection(db, "bookings"),
-    where("userId", "==", userId)
-  );
+  const getUserBookings = async (userId: string): Promise<Event[]> => {
+    console.log("userId passed to getUserBookings:", userId);
+    const q = query(
+      collection(db, "bookings"),
+      where("userId", "==", userId)
+    );
 
-  const snapshot = await getDocs(q);
+    const snapshot = await getDocs(q);
 
-  console.log("Bookings fetched:");
-  console.log(snapshot.docs.map(doc => doc.data())); // <== TEMP: add this
+    console.log("Bookings fetched:");
+    console.log(snapshot.docs.map(doc => doc.data())); // <== TEMP: add this
 
-  const bookings = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+    const bookings = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Event[];
 
-  return bookings;
-};
+    return bookings;
+  };
 
 
   const deleteEvent = async (eventID: string) => {
@@ -210,41 +221,61 @@ const getUserBookings = async (userId: string) => {
   };
 
 
-const getEventById = async (eventId: string): Promise<Event | null> => {
-  try {
-    const docRef = doc(db, "events", eventId);
-    const docSnap = await getDoc(docRef);
+  const getEventById = async (eventId: string): Promise<Event | null> => {
+    try {
+      const docRef = doc(db, "events", eventId);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as Event;
-    } else {
-      console.warn("No such event!");
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() } as Event;
+      } else {
+        console.warn("No such event!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching event:", error);
       return null;
     }
-  } catch (error) {
-    console.error("Error fetching event:", error);
-    return null;
-  }
-};
+  };
+
+  const getQuantity = async (eventId: string): Promise<number> => {
+    try {
+      if (!user) return 0;
+      const events: Event[] = await getUserBookings(user.uid);
+      const filtered = events.filter((event: Event) => event.id === eventId)
+      let sum = 0
+
+      filtered.forEach((event: any) => {
+        sum += event.seatCount
+      });
+      return sum
+    }
+    catch (error) {
+      console.error("Error fetching event:", error);
+      return 0
+    }
+
+  };
 
   return (
     <EventContext.Provider
-  value={{
-    ticketsFeed,
-    addEvent,
-    bookEvent,
-    unbookEvent,
-    getUserBookings,
-    loading,
-    deleteEvent,
-    bookEventAI,
-    searchFeed,
-    setSearchFeed,
-    isSearching,
-    setIsSearching,
-    getEventById,
-  }}
->
+      value={{
+        ticketsFeed,
+        addEvent,
+        bookEvent,
+        unbookEvent,
+        getUserBookings,
+        loading,
+        deleteEvent,
+        bookEventAI,
+        searchFeed,
+        setSearchFeed,
+        isSearching,
+        setIsSearching,
+        getEventById,
+        getQuantity
+      }}
+    >
 
       {children}
     </EventContext.Provider>
