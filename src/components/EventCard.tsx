@@ -5,7 +5,7 @@ import EventCardTag from '../modals/EventCardTag'
 import type { Event } from '../types'
 import { useEvent } from '../hooks/useEvent'
 
-const EventCard = ({ event, whatPage }: { event: Event, whatPage?: string }) => {
+const EventCard = ({ event, whatPage, quantity }: { event: Event, whatPage?: string, quantity?: number }) => {
     const { deleteEvent } = useEvent()
     const eventName = event.name
     const eventID = event.id
@@ -29,10 +29,11 @@ const EventCard = ({ event, whatPage }: { event: Event, whatPage?: string }) => 
                         {eventName}
                     </div>
                 </div>
-              
+
                 <div className='flex mb-2 overflow-x-scroll hide-scrollbar'>
                     <EventCardTag colour='pink' tag={"₹" + String(price)} />
                     <EventCardTag colour='indigo' tag={date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} />
+                    <EventCardTag colour='yellow' tag={(quantity)?.toString() || null} />
                 </div>
                 {whatPage === "admin" && <button
                     onClick={() => { () => console.log("clicked"); deleteEvent(eventID) }}
