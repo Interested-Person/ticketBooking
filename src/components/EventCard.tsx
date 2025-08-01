@@ -21,7 +21,7 @@ const EventCard = ({ event, whatPage, quantity }: { event: Event, whatPage?: str
     return (
         <div className="max-w-38 md:max-w-64 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div className="cursor-pointer" onClick={() => navigate("/event/" + eventID || "")}>
-                <img className="rounded-t-lg h-40 w-full  object-cover " src={eventImg || placeholder} alt="" />
+                <img referrerPolicy='no-referrer' loading='lazy' className="rounded-t-lg h-40 w-full  object-cover " src={eventImg || placeholder} alt="" />
             </div>
             <div className="p-2">
                 <div >
@@ -30,9 +30,9 @@ const EventCard = ({ event, whatPage, quantity }: { event: Event, whatPage?: str
                     </div>
                 </div>
 
-                <div className='flex mb-2 flex-wrap hide-scrollbar'>
+                <div className='flex mb-2 overflow-x-scroll hide-scrollbar'>
                     <EventCardTag colour='pink' tag={"₹" + String(price)} />
-                    <EventCardTag colour='yellow' tag={"Qty: " + (quantity)?.toString() || null} />
+                    {quantity !== undefined && <EventCardTag colour='yellow' tag={quantity ? `Qty:${quantity}` : null} />}
 
                     <EventCardTag colour='indigo' tag={date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()} />
                 </div>

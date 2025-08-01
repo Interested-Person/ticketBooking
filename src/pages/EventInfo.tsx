@@ -13,7 +13,7 @@ const EventInfo = () => {
     const { ticketsFeed, bookEvent } = useEvent();
     //We grab the eventID from the URL parameters
     const { eventID } = useParams();
-    const {open} = useModal();
+    const { open } = useModal();
     const event = ticketsFeed.find((e) => e.id === eventID);
     const { user } = useAuth()
     const [quantity, setQuantity] = useState(0);
@@ -84,7 +84,7 @@ const EventInfo = () => {
                                         </label>
                                         <div className=" relative flex items-center ">
                                             <button
-                                                onClick={() => setQuantity((prev) => (prev - 1))}
+                                                onClick={() => (quantity > 0) && setQuantity((prev) => (prev - 1))}
                                                 type="button"
                                                 id="decrement-button"
                                                 data-input-counter-decrement="bedrooms-input"
@@ -115,13 +115,14 @@ const EventInfo = () => {
                                                 className=" items-center m-auto appearance-none bg-gray-50 border-x-0 border-gray-300  font-medium text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder=""
                                                 value={quantity}
-                                                onChange={() => { }}
+
+                                                onChange={() => { (quantity > 0 && quantity < event.availableCapacity) && setQuantity(quantity) }}
 
                                             />
 
 
                                             <button
-                                                onClick={() => setQuantity(quantity + 1)}
+                                                onClick={() => quantity < event.availableCapacity && setQuantity(quantity + 1)}
                                                 type="button"
                                                 id="increment-button"
                                                 data-input-counter-increment="bedrooms-input"
